@@ -1,6 +1,7 @@
 namespace BlastAce.Actors
 {
-    //using Consent.Actors.DB;
+    using Consent.Actors.DB;
+    using Consent.Actors.DB;
     using Dapr.Client;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -20,14 +21,15 @@ namespace BlastAce.Actors
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(new DaprClientBuilder().Build());
-            //services.AddSingleton(new DBRepository(new ApplicationContext()));
+            services.AddSingleton(new DBRepository(new ApplicationContext()));
             services.AddActors(options =>
             {
-                //options.Actors.RegisterActor<AppAccessActor>();
-                //options.Actors.RegisterActor<FlowAccessActor>();
-                //options.Actors.RegisterActor<PolicyAccessActor>();
-                //options.Actors.RegisterActor<DecisionAccessActor>();
-                //options.Actors.RegisterActor<AppPolicyAccessActor>();
+                options.Actors.RegisterActor<AppAccessActor>();
+                options.Actors.RegisterActor<FlowAccessActor>();
+                options.Actors.RegisterActor<PolicyAccessActor>();
+                options.Actors.RegisterActor<DecisionAccessActor>();
+                options.Actors.RegisterActor<AppPolicyAccessActor>();
+                options.Actors.RegisterActor<ConsentActor>();
                 options.Actors.RegisterActor<TestActor>();
             });
         }
