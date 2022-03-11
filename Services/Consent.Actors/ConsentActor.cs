@@ -66,26 +66,12 @@ namespace BlastAce.Actors
             return await _dbRepository.GetDecisions(req.UserId);
         }
 
-        public async Task<List<AppPolicy>> GetDecisions2(DecisionsRequest req)
+        public async Task<List<AppPolicy>> GetDecisions2(DecisionsRequest2 req)
         {
             var appPolicies = await _dbRepository.GetAppPolicies();
             var decisions = await _dbRepository.GetDecisions(req.UserId);
-            foreach (var decision in decisions)
-            {
-                appPolicies = appPolicies.Where(ap => !(ap.PolicyId == decision.PolicyId
-                    && (ap.AppId == decision.AppId || !decision.AppId.HasValue)
-                    && (ap.FlowId == decision.FlowId || !decision.FlowId.HasValue))).ToList();
-            }
 
-            return appPolicies;
-        }
 
-        public async Task<List<AppPolicy>> GetDecisions3(DecisionsRequest2 req)
-        {
-            var appPolicies = await _dbRepository.GetAppPolicies();
-            var decisions = await _dbRepository.GetDecisions(req.UserId);
-            
-            
             if (req.AppName != null)
             {
                 var app = await _dbRepository.GetApp(req.AppName);
@@ -102,14 +88,48 @@ namespace BlastAce.Actors
                 Console.WriteLine($"FlowName:{flow?.Name}, appPolicies.Count:{appPolicies.Count}");
             }
 
-            
 
+            appPolicies = appPolicies.Where(ap => decisions.Any(d => d.PolicyId == ap.PolicyId)).ToList();
+            /*
             foreach (var decision in decisions)
             {
                 appPolicies = appPolicies.Where(ap => ap.PolicyId == decision.PolicyId
                     && (ap.AppId == decision.AppId || !decision.AppId.HasValue)
                     && (ap.FlowId == decision.FlowId || !decision.FlowId.HasValue)).ToList();
+            }*/
+            Console.WriteLine($"appPolicies.Count:{appPolicies.Count}");
+            return appPolicies;
+        }
+
+        public async Task<List<AppPolicy>> GetDecisions3(DecisionsRequest2 req)
+        {
+            var appPolicies = await _dbRepository.GetAppPolicies();
+            var decisions = await _dbRepository.GetDecisions(req.UserId);
+            
+            
+            if (req.AppName != null)
+            {
+                var app = await _dbRepository.GetApp(req.AppName);
+                decisions = decisions.Where(d => app?.Id == d.AppId || !d.AppId.HasValue).ToList();
+                appPolicies = appPolicies.Where(ap => ap.AppId == app?.Id).ToList();
+                Console.WriteLine($"AppName:{app?.Name}, appPolicies.Count:{appPolicies.Count}");
             }
+
+            if (req.FlowName != null)
+            {
+                var flow = await _dbRepository.GetFlow(req.FlowName);
+                decisions = decisions.Where(d => flow?.Id == d.FlowId || !d.FlowId.HasValue).ToList();
+                appPolicies = appPolicies.Where(ap => ap.FlowId == flow?.Id).ToList();
+                Console.WriteLine($"FlowName:{flow?.Name}, appPolicies.Count:{appPolicies.Count}");
+            }
+
+            appPolicies = appPolicies.Where(ap => !decisions.Any(d => d.PolicyId == ap.PolicyId)).ToList();
+            /*foreach (var decision in decisions)
+            {
+                appPolicies = appPolicies.Where(ap => ap.PolicyId == decision.PolicyId
+                    && (ap.AppId == decision.AppId || !decision.AppId.HasValue)
+                    && (ap.FlowId == decision.FlowId || !decision.FlowId.HasValue)).ToList();
+            }*/
             Console.WriteLine($"appPolicies.Count:{appPolicies.Count}");
             return appPolicies;
         }

@@ -8,7 +8,7 @@ namespace Consent.Actors.Contract
     {
         Task<string> Consent(ConsentRequest req);
         Task<List<Decision>> GetDecisions(DecisionsRequest req);
-        Task<List<AppPolicy>> GetDecisions2(DecisionsRequest req);
+        Task<List<AppPolicy>> GetDecisions2(DecisionsRequest2 req);
         Task<List<AppPolicy>> GetDecisions3(DecisionsRequest2 req);
     }
 }

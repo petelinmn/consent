@@ -53,15 +53,15 @@ namespace Consent.Api.Controllers
                     FlowId = flowId
                 });
 
-        [Route("decisions2/{appId}/{flowId}/{userId}")]
+        [Route("decisions2/{appName}/{flowName}/{userId}")]
         [HttpGet]
-        public async Task<List<AppPolicy>> Decisions2([FromRoute] int? appId, [FromRoute] int? flowId, [FromRoute] string userId) =>
-            await ActorProxy.Create<IConsentActor>(new ActorId($"Consent_{userId ?? "unknown"}_{flowId ?? 0}"), "ConsentActor")
-                .GetDecisions2(new DecisionsRequest
+        public async Task<List<AppPolicy>> Decisions2([FromRoute] string appName, [FromRoute] string flowName, [FromRoute] string userId) =>
+            await ActorProxy.Create<IConsentActor>(new ActorId($"Consent_{userId ?? "unknown"}_{flowName ?? "some"}"), "ConsentActor")
+                .GetDecisions2(new DecisionsRequest2
                 {
-                    AppId = appId,
+                    AppName = appName,
                     UserId = userId,
-                    FlowId = flowId
+                    FlowName = flowName
                 });
 
         [Route("decisions3/{appName}/{flowName}/{userId}")]
