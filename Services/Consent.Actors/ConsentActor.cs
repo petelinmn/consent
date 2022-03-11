@@ -89,13 +89,20 @@ namespace BlastAce.Actors
             if (req.AppName != null)
             {
                 var app = await _dbRepository.GetApp(req.AppName);
-                decisions = decisions.Where(d => app.Id == d.AppId).ToList();
+                decisions = decisions.Where(d => app?.Id == d.AppId).ToList();
+                appPolicies = appPolicies.Where(ap => ap.AppId == app?.Id).ToList();
+                Console.WriteLine($"AppName:{app?.Name}, appPolicies.Count:{appPolicies.Count}");
             }
+
             if (req.FlowName != null)
             {
                 var flow = await _dbRepository.GetFlow(req.FlowName);
-                decisions = decisions.Where(d => flow.Id == d.FlowId).ToList();
+                decisions = decisions.Where(d => flow?.Id == d.FlowId).ToList();
+                appPolicies = appPolicies.Where(ap => ap.FlowId == flow?.Id).ToList();
+                Console.WriteLine($"FlowName:{flow?.Name}, appPolicies.Count:{appPolicies.Count}");
             }
+
+            
 
             foreach (var decision in decisions)
             {
@@ -103,7 +110,7 @@ namespace BlastAce.Actors
                     && (ap.AppId == decision.AppId || !decision.AppId.HasValue)
                     && (ap.FlowId == decision.FlowId || !decision.FlowId.HasValue)).ToList();
             }
-
+            Console.WriteLine($"appPolicies.Count:{appPolicies.Count}");
             return appPolicies;
         }
 

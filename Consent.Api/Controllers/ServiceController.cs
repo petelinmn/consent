@@ -23,7 +23,7 @@ namespace Consent.Api.Controllers
         [Route("app")]
         [HttpGet]
         public async Task<IEnumerable<App>> Get() =>
-            await ActorProxy.Create<IAppAccessActor>(new ActorId("GetAllApps"+Random.Shared.NextDouble().ToString()), "AppAccessActor")
+            await ActorProxy.Create<IAppAccessActor>(new ActorId("GetAllApps"), "AppAccessActor")
                 .GetApps();
 
         [Route("app/{appId}")]

@@ -21,7 +21,8 @@ namespace BlastAce.Actors
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(new DaprClientBuilder().Build());
-            services.AddSingleton(new DBRepository(new ApplicationContext()));
+            services.AddTransient<ApplicationContext>();
+            services.AddTransient<DBRepository>();
             services.AddActors(options =>
             {
                 options.Actors.RegisterActor<AppAccessActor>();
